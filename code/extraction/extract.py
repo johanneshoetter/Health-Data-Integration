@@ -7,7 +7,7 @@ from code.extraction.normalize_wdi import normalize_wdi
 from code.config import username, password, host, port, database, data_dir
 engine = create_engine('postgresql://{}:{}@{}:{}/{}'.format(username, password, host, port, database))
 
-INITIALIZE_DB = True
+INITIALIZE_DB = False
 
 if __name__ == '__main__':
     if INITIALIZE_DB:
