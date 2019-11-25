@@ -1,15 +1,16 @@
 import pandas as pd
 
-def rebuild_ihme(engine, connection):
+def stack_ihme(engine):
+    connection = engine.connect()
     # get all ihme tables that need to be united
     sql = """
-    SELECT name
-    FROM sqlite_master
-    WHERE type = 'table'
-    AND name LIKE 'ihme_gbd%'
+    SELECT table_name 
+    FROM information_schema.tables 
+    WHERE table_schema = 'public'
+    --AND table_name LIKE 'ihme_gbd%'
     ;
     """
-    df = pd.read_sql_query(sql, engine)
+    df = pd.read_sql(sql, engine)
     ihme_tables = df['name'].values
 
     # filter values for the ihme tables
@@ -48,5 +49,6 @@ def rebuild_ihme(engine, connection):
     sql = '\nUNION\n'.join(
         ["SELECT * FROM {} WHERE cause_id IN ({})".format(table_name, cause_ids) for table_name in ihme_tables]
     )
-    ihme_df = pd.read_sql_query(sql, engine)
-    ihme_df.to_sql('ihme_smoking_diseases', con=engine, if_exists='replace');
+    print(sql)
+    #ihme_df = pd.read_sql_query(sql, engine)
+    #ihme_df.to_sql('ihme_smoking_diseases', con=engine, if_exists='replace');
