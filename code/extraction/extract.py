@@ -7,10 +7,11 @@ from code.extraction.normalize_wdi import normalize_wdi
 from code.config import username, password, host, port, database, data_dir
 engine = create_engine('postgresql://{}:{}@{}:{}/{}'.format(username, password, host, port, database))
 
-INITIALIZE_DB = False
+INITIALIZE_DB = True
 
 if __name__ == '__main__':
     if INITIALIZE_DB:
+        print("Initializing database..")
         sql = """
         SELECT table_name
           FROM information_schema.tables
@@ -21,6 +22,8 @@ if __name__ == '__main__':
             table = row[0]
             sql = "DROP TABLE {}".format(table)
             engine.execute(sql)
+
     load_csv(data_dir, engine)
     normalize_ihme(engine)
     normalize_wdi(engine)
+    print("Finished extraction of data sources.")
