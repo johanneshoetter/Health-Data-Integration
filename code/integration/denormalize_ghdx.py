@@ -1,5 +1,6 @@
 import pandas as pd
 from collections import defaultdict
+from sqlalchemy import text
 
 def denormalize_ghdx(engine):
     table_names = [
@@ -26,26 +27,26 @@ def denormalize_ghdx(engine):
     for table in select_map.keys():
         alias_map[table] = alphabet.pop()
 
-    sql_select = "SELECT z.[Code],\n\tz.[Year],"
-    sql_join = ""
+    sql_select = 'SELECT z."Code",\n\tz."Year",'
+    sql_join = ''
     last_alias = None  # not last alias that exist, but last alias that has been used
     for idx, (table, columns) in enumerate(select_map.items()):
         alias = alias_map[table]
 
         # build the select part
-        sql_select += ', '.join(["\n\t{}.[{}]".format(alias, column) for column in columns]) + ','
+        sql_select += ', '.join(['\n\t{}."{}"'.format(alias, column) for column in columns]) + ','
 
         # build the from/join part
-        if last_alias:  # INNER JOIN
-            sql_join += "\nOUTER JOIN {table} {alias} \
-            \n\tON {alias}.[Code] = {last_alias}.[Code] AND {alias}.[Year] = {last_alias}.[Year]".format(table=table, \
+        if last_alias:  # OUTER JOIN
+            sql_join += '\nFULL OUTER JOIN {table} {alias} \
+            \n\tON {alias}."Code" = {last_alias}."Code" AND {alias}."Year" = {last_alias}."Year"'.format(table=table, \
                                                                                                          alias=alias, \
                                                                                                          last_alias=last_alias)
         else:  # FROM
             sql_join = "\nFROM {} {}".format(table, alias)
         last_alias = alias
-    sql = sql_select[:-1] + sql_join  # [:-1] to get rid of last commata
+    sql = text(sql_select[:-1] + sql_join)  # [:-1] to get rid of last commata
 
     print(sql)
-    #df = pd.read_sql_query(sql, con=engine)
-    #print(df.shape)
+    df = pd.read_sql_query(sql, con=engine)
+    print(df.shape)
