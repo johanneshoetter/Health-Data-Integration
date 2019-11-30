@@ -1,7 +1,13 @@
 import pandas as pd
 from sqlalchemy import text
 
+from code.utils.dataframe_utils import df_to_sql
+
+
 def stack_ihme(engine):
+
+    print("Beginning stacking for ihme tables")
+
     connection = engine.connect()
     # get all ihme tables that need to be united
     sql = """
@@ -50,6 +56,9 @@ def stack_ihme(engine):
     sql = text('\nUNION\n'.join(
         ["SELECT * FROM {} WHERE cause_id IN ({})".format(table_name, cause_ids) for table_name in ihme_tables]
     ))
-    print(sql)
-    #ihme_df = pd.read_sql_query(sql, engine)
-    #ihme_df.to_sql('ihme_smoking_diseases', con=engine, if_exists='replace');
+    ihme_df = pd.read_sql_query(sql, engine)
+    df_to_sql(ihme_df, 'ihme_smoking_diseases', engine, if_exists='replace')
+
+    print("Finished stacking")
+
+    return list(ihme_tables) # maybe needed for cleaning afterwards

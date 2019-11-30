@@ -2,7 +2,13 @@ import pandas as pd
 from collections import defaultdict
 from sqlalchemy import text
 
+from code.utils.dataframe_utils import df_to_sql
+
+
 def denormalize_ghdx(engine):
+
+    print("Beginning denormalization of ghdx data")
+
     table_names = [
         'average_price_of_a_pack_of_cigarettes',
         'comparing_the_share_of_men_and_women_who_are_smoking',
@@ -47,6 +53,9 @@ def denormalize_ghdx(engine):
         last_alias = alias
     sql = text(sql_select[:-1] + sql_join)  # [:-1] to get rid of last commata
 
-    print(sql)
     df = pd.read_sql_query(sql, con=engine)
-    print(df.shape)
+    df_to_sql(df, 'ghdx_measures', engine, if_exists='replace')
+
+    print("Finished denormalization of ghdx data")
+
+    return table_names # might be needed for cleaning afterwards
