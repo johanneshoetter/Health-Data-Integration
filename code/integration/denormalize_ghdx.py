@@ -67,14 +67,13 @@ def denormalize_ghdx(engine):
             sql_join = "\nFROM {} {}".format(table, alias)
             sql_condition += '\nWHERE ({alias}."Code" = \'USA\' AND {alias}."Year" = \'1980\')'.format(alias=alias, last_alias=last_alias)
         last_alias = alias
-    sql = sql_select[:-1] + sql_join + sql_condition  # [:-1] to get rid of last commata
+    sql_template = sql_select[:-1] + sql_join + sql_condition  # [:-1] to get rid of last commata
 
     # melting the rows together
     for code, year in code_year_combinations_df.values:
-        sql_head = 'SELECT \'{code}\' "Code",\n\t \'{year}\'"Year",'.format(code=code, year=year)
-        row_sql = text(sql_head + sql)
-
-        df = pd.read_sql_query(row_sql, con=engine)
+        sql = text('SELECT \'{code}\' "Code",\n\t \'{year}\'"Year",'.format(code=code, year=year) + sql_template)
+        print(sql)
+        df = pd.read_sql_query(sql, con=engine)
         row = {}
         for col in df.columns:
             try:
