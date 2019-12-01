@@ -56,8 +56,8 @@ def stack_ihme(engine):
     sql = text('\nUNION\n'.join(
         ["SELECT * FROM {} WHERE cause_id IN ({})".format(table_name, cause_ids) for table_name in ihme_tables]
     ))
-    #ihme_df = pd.read_sql_query(sql, engine)
-    #df_to_sql(ihme_df, 'ihme_smoking_diseases', engine, if_exists='replace')
+    ihme_df = pd.read_sql_query(sql, engine)
+    df_to_sql(ihme_df, 'ihme_smoking_diseases', engine, if_exists='replace')
 
     print("Finished stacking")
 

@@ -10,7 +10,7 @@ from code.config import username, password, host, port, database
 def integrate(engine, do_clean_db):
     ihme_tables = stack_ihme(engine)
     ghdx_tables = denormalize_ghdx(engine)
-    #wdi_tables = pivot_wdi(engine)
+    wdi_tables = pivot_wdi(engine)
 
     if do_clean_db:
         clean_db(engine, ihme_tables + ghdx_tables + wdi_tables)

@@ -7,8 +7,8 @@ from integration.integrate import integrate
 # TODO: argparser bauen
 if __name__ == '__main__':
     engine = create_engine('postgresql://{}:{}@{}:{}/{}'.format(username, password, host, port, database))
-    INITIALIZE_DB = False
-    CLEAN_DB = False
+    INITIALIZE_DB = True
+    CLEAN_DB = True
 
-    #extract(engine, INITIALIZE_DB)
-    #integrate(engine, CLEAN_DB)
+    extract(engine, INITIALIZE_DB)
+    integrate(engine, CLEAN_DB)
