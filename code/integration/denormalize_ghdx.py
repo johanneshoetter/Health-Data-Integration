@@ -20,7 +20,15 @@ def denormalize_ghdx(engine):
         'number_of_deaths_from_tobacco_smoking',
         'number_of_total_daily_smokers',
         'sales_of_cigarettes_per_adult_per_day',
-        'secondhand_smoke_deaths_by_age'
+        'secondhand_smoke_deaths_by_age',
+        #'share_of_adults_who_are_smoking_by_level_of_prosperity',
+        'share_of_adults_who_smoke',
+        'share_of_cancer_deaths_attributed_to_tobacco',
+        'share_of_tobacco_retail_price_that_is_tax',
+        'smoking_and_secondhand_deaths',
+        #'smoking_deaths_by_age',
+        'support_to_help_to_quit_tobacco_use',
+        'taxes_as_share_of_cigarette_price'
     ]
 
     select_map = defaultdict(list)
@@ -55,7 +63,6 @@ def denormalize_ghdx(engine):
 
     df = pd.read_sql_query(sql, con=engine)
     df_to_sql(df, 'ghdx_measures', engine, if_exists='replace')
-
     print("Finished denormalization of ghdx data")
 
     return table_names # might be needed for cleaning afterwards

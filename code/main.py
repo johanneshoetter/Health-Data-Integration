@@ -10,5 +10,5 @@ if __name__ == '__main__':
     INITIALIZE_DB = False
     CLEAN_DB = False
 
-    extract(engine, INITIALIZE_DB)
-    integrate(engine, CLEAN_DB)
+    #extract(engine, INITIALIZE_DB)
+    #integrate(engine, CLEAN_DB)

@@ -12,4 +12,4 @@ def pivot_wdi(engine):
     df_to_sql(df, 'wdidata_pivot', engine, if_exists='replace')
 
     print("Finished pivotization")
-    return ['wdidata']
+    return ['wdidata', 'wdifootnote'] # footnote isn't used in the method, but also must be cleaned
