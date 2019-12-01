@@ -62,17 +62,18 @@ def denormalize_ghdx(engine):
                         'AND {alias}."Year" = {last_alias}."Year"'.format(table=table, \
                                  alias=alias, \
                                  last_alias=last_alias)
-            sql_condition += '\n\tOR ({alias}."Code" = \'USA\' AND {alias}."Year" = \'1980\')'.format(alias=alias, last_alias=last_alias)
+            sql_condition += '\n\tOR ({alias}."Code" = \'<CODE>\' AND {alias}."Year" = \'<YEAR>\')'.format(alias=alias, last_alias=last_alias)
         else:  # FROM
             sql_join = "\nFROM {} {}".format(table, alias)
-            sql_condition += '\nWHERE ({alias}."Code" = \'USA\' AND {alias}."Year" = \'1980\')'.format(alias=alias, last_alias=last_alias)
+            sql_condition += '\nWHERE ({alias}."Code" = \'<CODE>\' AND {alias}."Year" = \'<YEAR>\')'.format(alias=alias, last_alias=last_alias)
         last_alias = alias
     sql_template = sql_select[:-1] + sql_join + sql_condition  # [:-1] to get rid of last commata
 
     # melting the rows together
     for code, year in code_year_combinations_df.values:
-        sql = text('SELECT \'{code}\' "Code",\n\t \'{year}\'"Year",'.format(code=code, year=year) + sql_template)
-        print(sql)
+        sql = text('SELECT \'{code}\' "Code",\n\t \'{year}\'"Year",'.format(code=code, year=year) +
+                   sql_template.replace('<CODE>', str(code)).replace('<YEAR>', str(year)))
+        #print(sql)
         df = pd.read_sql_query(sql, con=engine)
         row = {}
         for col in df.columns:
