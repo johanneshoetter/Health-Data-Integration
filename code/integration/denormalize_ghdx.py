@@ -73,7 +73,6 @@ def denormalize_ghdx(engine):
     for code, year in code_year_combinations_df.values:
         sql = text('SELECT \'{code}\' "Code",\n\t \'{year}\'"Year",'.format(code=code, year=year) +
                    sql_template.replace('<CODE>', str(code)).replace('<YEAR>', str(year)))
-        #print(sql)
         df = pd.read_sql_query(sql, con=engine)
         row = {}
         for col in df.columns:
