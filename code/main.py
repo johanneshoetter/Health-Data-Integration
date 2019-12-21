@@ -3,6 +3,7 @@ from config import username, password, host, port, database
 
 from extraction.extract import extract
 from integration.integrate import integrate
+from cleansing.cleansing import cleanse
 
 # TODO: argparser bauen
 if __name__ == '__main__':
@@ -12,3 +13,4 @@ if __name__ == '__main__':
 
     extract(engine, INITIALIZE_DB)
     integrate(engine, CLEAN_DB)
+    cleanse(engine)
