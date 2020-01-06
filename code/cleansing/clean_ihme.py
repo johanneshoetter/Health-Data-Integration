@@ -81,9 +81,11 @@ def clean_ihme(engine):
     # IHME as view
     sql = """\
     DROP VIEW IF EXISTS ihme_smoking_diseases_cleaned;
-
+    
     CREATE VIEW ihme_smoking_diseases_cleaned AS
-    SELECT * FROM ihme_smoking_diseases;
+    SELECT "measure_id", "location_id", "sex_id", "age_id", "cause_id", "metric_id", "year",
+           ROUND("val") AS val, ROUND("upper") AS upper, ROUND("lower") AS lower
+    FROM ihme_smoking_diseases;
     """
     sql = text(sql)
     _ = engine.execute(sql)
